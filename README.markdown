@@ -1,4 +1,4 @@
-# tranmission-client: A Transmission RPC Client
+# transmission-client: A Transmission RPC Client
 
 The goal is to support all requests described in the Transmission [RPC Specifications](http://trac.transmissionbt.com/browser/trunk/doc/rpc-spec.txt).
 
