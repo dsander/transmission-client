@@ -4,13 +4,14 @@ require 'rake'
 begin
   require 'jeweler'
   Jeweler::Tasks.new do |gem|
-    gem.name = "transmission-rpc"
-    gem.summary = %Q{TODO: one-line summary of your gem}
-    gem.description = %Q{TODO: longer description of your gem}
+    gem.name = "transmission-client"
+    gem.summary = %Q{A Transmission RPC Client}
+    #gem.description = %Q{}
     gem.email = "git@dsander.de"
-    gem.homepage = "http://github.com/dsander/transmission-rpc"
+    gem.homepage = "http://github.com/dsander/transmission-client"
     gem.authors = ["Dominik Sander"]
     gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
+    gem.files += Dir['lib/**/*.rb','README.markdown']
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
   end
   Jeweler::GemcutterTasks.new
