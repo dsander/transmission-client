@@ -52,6 +52,7 @@ module Transmission
   	  Connection.instance.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES})['torrents'].each do |t|
   	    torrs << Torrent.new(t)
 		  end
+		  torrs
     end
   end
 end
