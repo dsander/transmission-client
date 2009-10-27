@@ -29,7 +29,6 @@ module Transmission
     end
     
     def method_missing(m, *args, &block)
-      pp m
       if ATTRIBUTES.include? m.to_s
         return @attributes[m.to_s]
       elsif ADV_ATTRIBUTES.include? m.to_s
