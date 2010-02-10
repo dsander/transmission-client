@@ -1,5 +1,7 @@
 # transmission-client: A Transmission RPC Client
 
+**Warning - The next release will drop support for the blocking api. Eventmachine will be required by then.**
+
 The goal is to support all requests described in the Transmission [RPC Specifications](http://trac.transmissionbt.com/browser/trunk/doc/rpc-spec.txt).
 
 ## Installing

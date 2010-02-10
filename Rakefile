@@ -10,6 +10,7 @@ begin
     gem.email = "git@dsander.de"
     gem.homepage = "http://github.com/dsander/transmission-client"
     gem.authors = ["Dominik Sander"]
+    gem.add_dependency "em-http-request"
     gem.add_development_dependency "thoughtbot-shoulda", ">= 0"
     gem.files += Dir['lib/**/*.rb','README.markdown']
     # gem is a Gem::Specification... see http://www.rubygems.org/read/chapter/20 for additional settings
