@@ -1,6 +1,6 @@
 # transmission-client: A Transmission RPC Client
 
-**Warning - The next release will drop support for the blocking api. Eventmachine will be required by then.**
+**Please note, with the current release i dropped support for the blocking api. Eventmachine is now required.**
 
 The goal is to support all requests described in the Transmission [RPC Specifications](http://trac.transmissionbt.com/browser/trunk/doc/rpc-spec.txt).
 
@@ -18,23 +18,9 @@ To install transmission-client:
 
 	sudo gem install transmission-client
 
-If you want to use EventMachine (optional) you need to install the eventmachine gem and igrigorik's em-http-request:
-	
-	sudo gem install eventmachine
-	sudo gem install em-http-request
-
 ## Usage
 Get a list of torrents and print its file names:
 
-	require 'transmission-client'
-	t = Transmission::Client.new('127.0.0.1', 9091)
-	t.torrents.each do |torrent|
-	  puts torrent.name
-	end
-
-To use the EventMachine driven interface:
-
-	require 'eventmachine'
 	require 'transmission-client'
 
 	EventMachine.run do
@@ -47,5 +33,28 @@ To use the EventMachine driven interface:
 	    end
 	  end
 	end
+	
+Authentication support (thanks hornairs):
 
+	t = Transmission::Client.new('127.0.0.1', 9091, 'username', 'password')
+	
+Callbacks:
+
+	EventMachine.run do
+		t = Transmission::Client.new
+	  	
+	  	t.on_download_finished do |torrent|
+	  	  puts "Wha torrent finished"
+	  	end
+	  	t.on_torrent_stopped do |torrent|
+	  	  puts "Oooh torrent stopped"
+	  	end
+	  	t.on_torrent_started do |torrent|
+	  	  puts "Torrent started."
+	  	end
+	  	t.on_torrent_removed do |torrent|
+	  	  puts "Darn torrent deleted."
+	  	end
+	end
+	
 RDoc is still to be written, at the meantime have a look at the code to find out which methods are supported.
