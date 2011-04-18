@@ -54,6 +54,10 @@ module Transmission
       Connection.request('session-get') { |resp| yield Session.new resp }
     end
     
+    def session_stat
+      Connection.request('session-stats') { |resp| yield SessionStat.new resp }
+    end
+    
     def torrents(fields = nil)
   	  Connection.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES}) { |resp| 
   	    torrs = []
