@@ -1,6 +1,9 @@
 module Transmission  
-  class Session
+  class SessionStat
     ATTRIBUTES = ['activeTorrentCount', 'downloadSpeed', 'pausedTorrentCount', 'torrentCount', 'uploadSpeed', 'cumulative-stats', 'current-stats']
+
+    attr_reader :attributes
+
     def initialize(attributes)
       @attributes = attributes
     end
