@@ -9,8 +9,14 @@ module Transmission
     SEED       = 8
     STOPPED    = 16
     
+    attr_reader :attributes
+    
     def initialize(attributes)
       @attributes = attributes
+    end
+
+    def to_json
+      @attributes.to_json
     end
 
     def start
