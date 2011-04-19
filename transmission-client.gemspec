@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{transmission-client}
-  s.version = "0.0.2"
+  s.version = "0.0.3"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dominik Sander"]
-  s.date = %q{2011-04-18}
+  s.date = %q{2011-04-19}
   s.email = %q{git@dsander.de}
   s.extra_rdoc_files = [
     "LICENSE",
@@ -28,7 +28,8 @@ Gem::Specification.new do |s|
     "lib/transmission-client/session_stat.rb",
     "lib/transmission-client/torrent.rb",
     "test/helper.rb",
-    "test/test_transmission-rpc.rb"
+    "test/test_transmission-rpc.rb",
+    "transmission-client.gemspec"
   ]
   s.homepage = %q{http://github.com/dsander/transmission-client}
   s.require_paths = ["lib"]
