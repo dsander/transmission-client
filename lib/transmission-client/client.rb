@@ -7,39 +7,39 @@ module Transmission
     def on_torrent_removed(&blk); @on_torrent_removed = blk; callback_initialized; end
     
     def initialize(host='localhost',port=9091, username = nil, password = nil)
-      Connection.init(host, port, username, password)
+      @connection = Connection.new(host, port, username, password)
       @torrents = nil
     end
     
     def start_all &cb
-      Connection.send('torrent-start')
+      @connection.send('torrent-start')
     end
     
     def start(id)
-      Connection.send('torrent-start', {'ids' => id.class == Array ? id : [id]})
+      @connection.send('torrent-start', {'ids' => id.class == Array ? id : [id]})
     end
     
     def stop(id)
-      Connection.send('torrent-stop', {'ids' => id.class == Array ? id : [id]})
+      @connection.send('torrent-stop', {'ids' => id.class == Array ? id : [id]})
     end
     
     def stop_all &cb
-      Connection.send('torrent-stop')
+      @connection.send('torrent-stop')
     end
     
     def remove(id, delete_data = false)
-      Connection.send('torrent-remove', {'ids' => id.class == Array ? id : [id], 'delete-local-data' => delete_data })
+      @connection.send('torrent-remove', {'ids' => id.class == Array ? id : [id], 'delete-local-data' => delete_data })
     end
     
     def remove_all(delete_data = false)
-      Connection.send('torrent-remove', {'delete-local-data' => delete_data })
+      @connection.send('torrent-remove', {'delete-local-data' => delete_data })
     end
 
     def add_torrent(a)
       if a['filename'].nil? && a['metainfo'].nil?
         raise "You need to provide either a 'filename' or 'metainfo'."
       end
-      Connection.send('torrent-add', a)
+      @connection.send('torrent-add', a)
     end
     
     def add_torrent_by_file(filename)
@@ -51,15 +51,15 @@ module Transmission
     end
     
     def session
-      Connection.request('session-get') { |resp| yield Session.new resp }
+      @connection.request('session-get') { |resp| yield Session.new resp }
     end
     
     def session_stat
-      Connection.request('session-stats') { |resp| yield SessionStat.new resp }
+      @connection.request('session-stats') { |resp| yield SessionStat.new resp }
     end
     
     def torrents(fields = nil)
-  	  Connection.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES}) { |resp| 
+  	  @connection.request('torrent-get', {'fields' => fields ? fields : Transmission::Torrent::ATTRIBUTES}) { |resp|
   	    torrs = []
   	    resp['torrents'].each do |t|
   	      torrs << Torrent.new(t)
