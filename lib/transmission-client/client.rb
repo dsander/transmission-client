@@ -36,7 +36,7 @@ module Transmission
     end
 
     def add_tracker(id, announce = 'http://retracker.local/announce')
-      @connection.send('torrent-set', {'ids' => id.class == Array ? id : [id], 'trackerAdd' => announce })
+      @connection.send('torrent-set', {'ids' => id.class == Array ? id : [id], 'trackerAdd' => announce.is_a?(Array) ? announce : [announce] })
     end
 
     def get_trackers(id)
