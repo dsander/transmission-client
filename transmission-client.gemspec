@@ -5,11 +5,11 @@
 
 Gem::Specification.new do |s|
   s.name = %q{transmission-client}
-  s.version = "0.0.4"
+  s.version = "0.0.5"
 
   s.required_rubygems_version = Gem::Requirement.new(">= 0") if s.respond_to? :required_rubygems_version=
   s.authors = ["Dominik Sander"]
-  s.date = %q{2011-04-19}
+  s.date = %q{2011-04-21}
   s.email = %q{git@dsander.de}
   s.extra_rdoc_files = [
     "LICENSE",
