@@ -73,6 +73,7 @@ module Transmission
     #TODO handler for resp['status'] != 'success'
     # options = { 'fields' => ['id'], 'ids' => [1,4,6] }
     def torrents(options = {})
+      options = { 'fields' => options } if options.is_a? Array
       params = { 'fields' => Transmission::Torrent::ATTRIBUTES}.merge options
       @connection.request('torrent-get', params) { |resp|
         if resp == :connection_error
