@@ -81,7 +81,7 @@ module Transmission
         else
           torrs = []
           resp['torrents'].each do |t|
-            torrs << Torrent.new(t)
+            torrs << Torrent.new(t, @connection)
           end
           yield torrs
         end

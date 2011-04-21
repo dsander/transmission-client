@@ -11,8 +11,9 @@ module Transmission
     
     attr_reader :attributes
     
-    def initialize(attributes)
+    def initialize(attributes, connection)
       @attributes = attributes
+      @connection = connection
     end
 
     def to_json
@@ -20,23 +21,23 @@ module Transmission
     end
 
     def start
-      Connection.send('torrent-start', {'ids' => @attributes['id']})
+      @connection.send('torrent-start', {'ids' => @attributes['id']})
     end
     
     def stop
-      Connection.send('torrent-stop', {'ids' => @attributes['id']})
+      @connection.send('torrent-stop', {'ids' => @attributes['id']})
     end
 
     def verify
-      Connection.send('torrent-verify', {'ids' => @attributes['id']})
+      @connection.send('torrent-verify', {'ids' => @attributes['id']})
     end
     
     def reannounce
-      Connection.send('torrent-reannounce', {'ids' => @attributes['id']})
+      @connection.send('torrent-reannounce', {'ids' => @attributes['id']})
     end
     
     def remove(delete_data = false)
-      Connection.send('torrent-remove', {'ids' => @attributes['id'], 'delete-local-data' => delete_data })
+      @connection.send('torrent-remove', {'ids' => @attributes['id'], 'delete-local-data' => delete_data })
     end
     
     def downloading?
