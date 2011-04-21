@@ -19,3 +19,6 @@ rdoc
 pkg
 #transmission-client.gemspec # It's needed by bundler
 ## PROJECT::SPECIFIC
+
+## Idea
+.idea
