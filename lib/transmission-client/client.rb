@@ -57,7 +57,7 @@ module Transmission
 
     #TODO handler for resp['status'] != 'success'
     def session
-      Connection.request('session-get') do |resp|
+      @connection.request('session-get') do |resp|
         if resp == :connection_error
           yield :connection_error
         else
@@ -74,7 +74,7 @@ module Transmission
     # options = { 'fields' => ['id'], 'ids' => [1,4,6] }
     def torrents(options = {})
       params = { 'fields' => Transmission::Torrent::ATTRIBUTES}.merge options
-      Connection.request('torrent-get', params) { |resp|
+      @connection.request('torrent-get', params) { |resp|
         if resp == :connection_error
           yield :connection_error
         else
