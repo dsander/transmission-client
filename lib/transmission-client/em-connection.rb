@@ -29,13 +29,13 @@ module Transmission
         end
       }
       req.errback {
-        raise "Unknown response."
+        yield :connection_error
       }
     end
 
     def send(method, attributes={})
       request(method, attributes) do |resp|
-        yield resp
+        yield resp if block_given?
       end
     end
 
