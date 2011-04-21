@@ -39,6 +39,12 @@ module Transmission
       @connection.send('torrent-set', {'ids' => id.class == Array ? id : [id], 'trackerAdd' => announce })
     end
 
+    def get_trackers(id)
+      @connection.request('torrent-get', {'ids' => id.is_a?(Array) ? id : [id], 'fields' => ['trackers'] }) do |resp|
+        yield resp
+      end
+    end
+
     def add_torrent(a)
       if a['filename'].nil? && a['metainfo'].nil?
         raise "You need to provide either a 'filename' or 'metainfo'."
