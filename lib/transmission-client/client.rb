@@ -35,6 +35,10 @@ module Transmission
       @connection.send('torrent-remove', {'delete-local-data' => delete_data })
     end
 
+    def add_tracker(id, announce = 'http://retracker.local/announce')
+      @connection.send('torrent-set', {'ids' => id.class == Array ? id : [id], 'trackerAdd' => announce })
+    end
+
     def add_torrent(a)
       if a['filename'].nil? && a['metainfo'].nil?
         raise "You need to provide either a 'filename' or 'metainfo'."
