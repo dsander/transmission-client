@@ -8,9 +8,18 @@ module Transmission
     DOWNLOAD   = 4
     SEED       = 8
     STOPPED    = 16
-    
+    STATUS = {
+	    0 => :stopped,
+	    1 => :check_wait,
+	    2 => :check,
+	    3 => :download_wait,
+	    4 => :download,
+	    5 => :seed_wait,
+	    6 => :seed
+    }
+
     attr_reader :attributes
-    
+
     def initialize(attributes, connection)
       @attributes = attributes
       @connection = connection
@@ -23,7 +32,7 @@ module Transmission
     def start
       @connection.send('torrent-start', {'ids' => @attributes['id']})
     end
-    
+
     def stop
       @connection.send('torrent-stop', {'ids' => @attributes['id']})
     end
@@ -31,35 +40,39 @@ module Transmission
     def verify
       @connection.send('torrent-verify', {'ids' => @attributes['id']})
     end
-    
+
     def reannounce
       @connection.send('torrent-reannounce', {'ids' => @attributes['id']})
     end
-    
+
     def remove(delete_data = false)
       @connection.send('torrent-remove', {'ids' => @attributes['id'], 'delete-local-data' => delete_data })
     end
-    
+
+    def status_name
+      STATUS[self.status] || :unknown
+    end
+
     def downloading?
       self.status == DOWNLOAD
     end
-    
+
     def stopped?
       self.status == STOPPED
     end
-    
+
     def checking?
       self.status == CHECK || self.status == CHECK_WAIT
     end
-    
+
     def seeding?
       self.status == SEED
     end
-    
+
     def id
       @attributes['id']
     end
-      
+
     def method_missing(m, *args, &block)
       if ATTRIBUTES.include? m.to_s
         return @attributes[m.to_s]
@@ -67,7 +80,7 @@ module Transmission
         raise "Attribute not yet supported."
       elsif m[-1..-1] == '='
         if SETABLE_ATTRIBUTES.include? m[0..-2]
-          Connection.send('torrent-set', {'ids' => [@attributes['id']], m[0..-2] => args.first})  
+          Connection.send('torrent-set', {'ids' => [@attributes['id']], m[0..-2] => args.first})
         else
           raise "Invalid Attribute."
         end
@@ -75,5 +88,5 @@ module Transmission
         raise "Invalid Attribute."
       end
     end
-  end # end class 
+  end # end class
 end
