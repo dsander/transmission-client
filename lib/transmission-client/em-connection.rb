@@ -4,11 +4,11 @@ module Transmission
       @host = host
       @port = port
       @header = username.nil? ? {} : {'authorization' => [username, password]}
-      uri = URI.parse("http://#{@host}:#{@port}/transmission/rpc")
-      @conn = EventMachine::HttpRequest.new(uri)
+      @uri = URI.parse("http://#{@host}:#{@port}/transmission/rpc")
     end
 
     def request(method, attributes={})
+      @conn = EventMachine::HttpRequest.new(@uri)
       req = @conn.post(:body => build_json(method,attributes), :head => @header )
       req.callback {
         case req.response_header.status
