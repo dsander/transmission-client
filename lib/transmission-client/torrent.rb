@@ -74,9 +74,10 @@ module Transmission
     end
 
     def method_missing(m, *args, &block)
-      if ATTRIBUTES.include? m.to_s
-        return @attributes[m.to_s]
-      elsif ADV_ATTRIBUTES.include? m.to_s
+      m = m.to_s.split('_').inject([]){ |buffer,e| buffer.push(buffer.empty? ? e : e.capitalize) }.join
+      if ATTRIBUTES.include? m
+        return @attributes[m]
+      elsif ADV_ATTRIBUTES.include? m
         raise "Attribute not yet supported."
       elsif m[-1..-1] == '='
         if SETABLE_ATTRIBUTES.include? m[0..-2]
