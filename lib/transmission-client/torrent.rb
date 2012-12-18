@@ -73,6 +73,21 @@ module Transmission
       @attributes['id']
     end
 
+    def percent_done
+      (method_missing(:percent_done) * 100).round
+    end
+
+    def eta_text
+      secs = self.eta
+      return "Done" if secs == -1
+      [[60, :seconds], [60, :minutes], [24, :hours], [10000, :days]].map{ |count, name|
+        if secs > 0
+          secs, n = secs.divmod(count)
+          "#{n.to_i} #{name}"
+        end
+      }.compact.reverse.join(' ')
+    end
+
     def method_missing(m, *args, &block)
       m = m.to_s.split('_').inject([]){ |buffer,e| buffer.push(buffer.empty? ? e : e.capitalize) }.join
       if ATTRIBUTES.include? m
