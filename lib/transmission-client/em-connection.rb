@@ -9,14 +9,14 @@ module Transmission
 
     def request(method, attributes={})
       @conn = EventMachine::HttpRequest.new(@uri)
-      req = @conn.post(:body => build_json(method,attributes), :head => @header )
+      req = @conn.post(:body => build_json(method, attributes), :head => @header)
       req.callback {
         case req.response_header.status
           when 401
             raise SecurityError, 'The client was not able to authenticate, is your username or password wrong?'
           when 409 #&& @header['x-transmission-session-id'].nil?
             @header['x-transmission-session-id'] = req.response_header['X_TRANSMISSION_SESSION_ID']
-            request(method,attributes) do |resp|
+            request(method, attributes) do |resp|
               yield resp
             end
           when 200
