@@ -87,13 +87,13 @@ module Transmission
         if resp == :connection_error
           yield :connection_error
         else
-          yield Session.new resp
+          yield Session.new(resp)
         end
       end
     end
 
     def session_stat
-      @connection.request('session-stats') { |resp| yield SessionStat.new resp }
+      @connection.request('session-stats') { |resp| yield SessionStat.new(resp) }
     end
 
     #TODO handler for resp['status'] != 'success'
@@ -101,17 +101,14 @@ module Transmission
     def torrents(options = {})
       options = { 'fields' => options } if options.is_a? Array
       params = { 'fields' => Transmission::Torrent::ATTRIBUTES}.merge options
-      @connection.request('torrent-get', params) { |resp|
+      @connection.request('torrent-get', params) do |resp|
         if resp == :connection_error
           yield :connection_error
         else
-          torrs = []
-          resp['torrents'].each do |t|
-            torrs << Torrent.new(t, @connection)
-          end
+          torrs = resp['torrents'].map { |t| Torrent.new(t, @connection) }
           yield torrs
         end
-      }
+      end
     end
 
     private
