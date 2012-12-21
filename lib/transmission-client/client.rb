@@ -126,19 +126,17 @@ module Transmission
           tors.each do |torrent|
             updated_torrents[torrent.id] = torrent
           end
-          compare_torrent_status updated_torrents
-          @torrents = updated_torrents.dup
+          compare_torrent_status(@torrents, updated_torrents) if @torrents
+          @torrents = updated_torrents
         end
-
-
       end
     end
 
-    def compare_torrent_status(updated_torrents)
-      return false unless @torrents
+    def compare_torrent_status(old_torrents, updated_torrents)
+      old_torrents = old_torrents.dup
       updated_torrents.each_pair do |id, t|
-        old = @torrents[t.id] if @torrents[t.id]
-        if old == nil
+        old = old_torrents[t.id]
+        if old.nil?
           @on_torrent_started.call t if @on_torrent_started
         elsif old.downloading? && t.seeding?
           @on_download_finished.call t if @on_download_finished
@@ -147,10 +145,10 @@ module Transmission
         elsif !old.stopped? && t.stopped?
           @on_torrent_stopped.call t if @on_torrent_stopped
         end
-        @torrents.delete t.id
+        old_torrents.delete t.id
       end
-      if @torrents.length > 0 && @on_torrent_removed
-        @torrents.values.each do |t|
+      if @on_torrent_removed
+        old_torrents.values.each do |t|
           @on_torrent_removed.call t
         end
       end
