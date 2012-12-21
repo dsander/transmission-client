@@ -18,13 +18,13 @@ module Transmission
     end
 
     def start(id)
-      @connection.send('torrent-start', {'ids' => id.class == Array ? id : [id]}) do |resp|
+      @connection.send('torrent-start', {'ids' => [*id].map(&:to_i)}) do |resp|
         yield resp if block_given?
       end
     end
 
     def stop(id)
-      @connection.send('torrent-stop', {'ids' => id.class == Array ? id : [id]}) do |resp|
+      @connection.send('torrent-stop', {'ids' => [*id].map(&:to_i)}) do |resp|
         yield resp if block_given?
       end
     end
@@ -36,7 +36,7 @@ module Transmission
     end
 
     def remove(id, delete_data = false)
-      @connection.send('torrent-remove', {'ids' => id.class == Array ? id : [id], 'delete-local-data' => delete_data }) do |resp|
+      @connection.send('torrent-remove', {'ids' => [*id].map(&:to_i), 'delete-local-data' => delete_data }) do |resp|
         yield resp if block_given?
       end
     end
@@ -48,13 +48,13 @@ module Transmission
     end
 
     def add_tracker(id, announce = 'http://retracker.local/announce')
-      @connection.send('torrent-set', {'ids' => id.class == Array ? id : [id], 'trackerAdd' => announce.is_a?(Array) ? announce : [announce] }) do |resp|
+      @connection.send('torrent-set', {'ids' => [*id].map(&:to_i), 'trackerAdd' => [*announce] }) do |resp|
         yield resp if block_given?
       end
     end
 
     def get_trackers(id)
-      @connection.request('torrent-get', {'ids' => id.is_a?(Array) ? id : [id], 'fields' => ['trackers'] }) do |resp|
+      @connection.request('torrent-get', {'ids' => [*id].map(&:to_i), 'fields' => ['trackers'] }) do |resp|
         yield resp
       end
     end
