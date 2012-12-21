@@ -96,6 +96,12 @@ module Transmission
       @connection.request('session-stats') { |resp| yield SessionStat.new(resp) }
     end
 
+    def get_torrent(id, &block)
+      self.torrents("ids" => [id.to_i]) do |torrents|
+        block.call(torrents.first)
+      end
+    end
+
     #TODO handler for resp['status'] != 'success'
     # options = { 'fields' => ['id'], 'ids' => [1,4,6] }
     def torrents(options = {})
