@@ -9,4 +9,4 @@ require 'em-http'
 require 'transmission-client/em-connection'
 require 'transmission-client/torrent'
 require 'transmission-client/session'
-
+require 'transmission-client/session_stat'

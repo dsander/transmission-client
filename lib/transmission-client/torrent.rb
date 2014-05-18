@@ -8,59 +8,95 @@ module Transmission
     DOWNLOAD   = 4
     SEED       = 8
     STOPPED    = 16
-    
-    def initialize(attributes)
+    STATUS = {
+	    0 => :stopped,
+	    1 => :check_wait,
+	    2 => :check,
+	    3 => :download_wait,
+	    4 => :download,
+	    5 => :seed_wait,
+	    6 => :seed
+    }
+
+    attr_reader :attributes
+
+    def initialize(attributes, connection)
       @attributes = attributes
+      @connection = connection
+    end
+
+    def to_json
+      @attributes.to_json
     end
 
     def start
-      Connection.send('torrent-start', {'ids' => @attributes['id']})
+      @connection.send('torrent-start', {'ids' => @attributes['id']})
     end
-    
+
     def stop
-      Connection.send('torrent-stop', {'ids' => @attributes['id']})
+      @connection.send('torrent-stop', {'ids' => @attributes['id']})
     end
 
     def verify
-      Connection.send('torrent-verify', {'ids' => @attributes['id']})
+      @connection.send('torrent-verify', {'ids' => @attributes['id']})
     end
-    
+
     def reannounce
-      Connection.send('torrent-reannounce', {'ids' => @attributes['id']})
+      @connection.send('torrent-reannounce', {'ids' => @attributes['id']})
     end
-    
+
     def remove(delete_data = false)
-      Connection.send('torrent-remove', {'ids' => @attributes['id'], 'delete-local-data' => delete_data })
+      @connection.send('torrent-remove', {'ids' => @attributes['id'], 'delete-local-data' => delete_data })
     end
-    
+
+    def status_name
+      STATUS[self.status] || :unknown
+    end
+
     def downloading?
       self.status == DOWNLOAD
     end
-    
+
     def stopped?
       self.status == STOPPED
     end
-    
+
     def checking?
       self.status == CHECK || self.status == CHECK_WAIT
     end
-    
+
     def seeding?
       self.status == SEED
     end
-    
+
     def id
       @attributes['id']
     end
-      
+
+    def percent_done
+      (method_missing(:percent_done) * 100).round
+    end
+
+    def eta_text
+      secs = self.eta
+      return "Done" if secs == -1
+      [[60, :seconds], [60, :minutes], [24, :hours], [10000, :days]].map{ |count, name|
+        if secs > 0
+          secs, n = secs.divmod(count)
+          "#{n.to_i} #{name}"
+        end
+      }.compact.reverse.join(' ')
+    end
+
     def method_missing(m, *args, &block)
-      if ATTRIBUTES.include? m.to_s
-        return @attributes[m.to_s]
-      elsif ADV_ATTRIBUTES.include? m.to_s
+      m = m.to_s.split('_').inject([]){ |buffer,e| buffer.push(buffer.empty? ? e : e.capitalize) }.join
+      if ATTRIBUTES.include? m
+        return @attributes[m]
+      elsif ADV_ATTRIBUTES.include? m
         raise "Attribute not yet supported."
       elsif m[-1..-1] == '='
         if SETABLE_ATTRIBUTES.include? m[0..-2]
-          Connection.send('torrent-set', {'ids' => [@attributes['id']], m[0..-2] => args.first})  
+          Connection.send('torrent-set', {'ids' => [@attributes['id']], m[0..-2] => args.first})
         else
           raise "Invalid Attribute."
         end
@@ -68,5 +104,5 @@ module Transmission
         raise "Invalid Attribute."
       end
     end
-  end # end class 
+  end # end class
 end
